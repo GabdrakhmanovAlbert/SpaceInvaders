@@ -1,6 +1,7 @@
 import random
 import pygame
 import sys
+from const import *
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -71,7 +72,7 @@ class Ghost(Enemy):
     def draw_invisible(self):
         '''Отрисовывает невидимого призрака'''
         self.screen.blit(self.invis_image, self.rect)
-    
+
     def ability(self):
         '''Распределяет, когда призрак становится видимым, а когда невидимым'''
         if self.frames_invisibility == 0:
@@ -79,7 +80,7 @@ class Ghost(Enemy):
             self.is_invisible = not self.is_invisible
         else:
             self.frames_invisibility -= 1
-        
+
         if self.is_invisible:
             self.draw_invisible()
         else:
@@ -104,19 +105,13 @@ class Armored_Enemy(Enemy):
             return
         self.image = pygame.image.load(
             f'img/protected_enemy/{self.counter_lives}armored_enemy.png')
-    
+
     def ability(self, enemies):
         '''Ортрисовка врага с щитом'''
         if self.counter_lives == 0:
             enemies.remove(self)
         else:
             self.draw()
-
-
-
-
-
-
 
 
 # TODO скорее всего создать Бонус.py
@@ -132,24 +127,12 @@ class Bonus(Enemy):
     # TODO столкновение c краем экрана (исчезает бонус)
 
 
-# * массив специальных врагов: машина, призрак, солдат с щитом
-enemies_pictures = ['img/enemy_car.png', 'img/ghost/', 'img/protected_enemy/']
-ghost_pictures = [['enemy_ghost0.png', 'enemy_ghost0_invisible1.png']]
-protected_enemy_pictures = [
-    '1armored_enemy.png', '2armored_enemy.png',
-    '3armored_enemy.png', '4armored_enemy.png',
-    '5armored_enemy.png', '6armored_enemy.png',
-    '7armored_enemy.png']
-
-
 def create_enemy(screen, extra_speed, stats):
     '''Создание случайного врага'''
-    global enemies_pictures, ghost_pictures, protected_enemy_pictures
-
     stats.counter_warriors += 1
 
     if stats.counter_warriors in stats.indexes_special_enemies:
-        type_enemy = random.choice(enemies_pictures)
+        type_enemy = random.choice(SPECIAL_ENEMIES_PICTURES)
         stats.indexes_special_enemies.discard(stats.counter_warriors)
     else:
         type_enemy = 'img/enemy_kaka.png'
@@ -157,14 +140,15 @@ def create_enemy(screen, extra_speed, stats):
     enemy = return_enemy(screen, type_enemy, extra_speed)
     return enemy
 
+
 def return_enemy(screen, type_enemy, extra_speed):
     '''Возвращает врага по type_enemy'''
     if type_enemy.endswith('/'):
         if type_enemy == 'img/ghost/':
-            files = random.choice(ghost_pictures)
+            files = random.choice(GHOST_PICTURES)
             return Ghost(screen, type_enemy + files[0], type_enemy + files[1], extra_speed)
         elif type_enemy == 'img/protected_enemy/':
-            file = random.choice(protected_enemy_pictures)
+            file = random.choice(PROTECTED_ENEMY_PICTURES)
             return Armored_Enemy(screen, type_enemy + file, extra_speed)
     else:
         if type_enemy == 'img/enemy_car.png':

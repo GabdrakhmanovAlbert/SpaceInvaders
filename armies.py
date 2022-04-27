@@ -1,10 +1,12 @@
 import Enemies
 import random
+from const import *
+
 
 #! Вариации размещения армий
 
 
-def square(screen, enemies, extra_speed, stats):
+def rectangle(screen, enemies, extra_speed, stats):
     '''Создание прямоугольной армии на весь экран'''
 
     number_enemy_x, number_enemy_y, enemy_width, enemy_height = quantify_enemies_x_y(
@@ -53,25 +55,25 @@ def quantify_enemies_x_y(screen):
     enemy_height = enemy.rect.height
     # * число противников по вертикали
     number_enemy_y = int(
-        (height_screen - 100 - 2 * enemy_height) / enemy_height) - 4
+        (height_screen - 100 - 2 * enemy_height) / enemy_height) - 6
 
     return (number_enemy_x, number_enemy_y, enemy_width, enemy_height)
 
+
 def wedge(screen, enemies, extra_speed):
     '''Создание армии построенной клином'''
-    types_enemies = ['img/enemy_kaka.png',
-                     'img/enemy_car.png',
-                     'img/ghost/',
-                     'img/protected_enemy/']
-    army_outline = types_enemies.pop(random.randint(
-        0, len(types_enemies) - 1))  # * по контуру клина тип врагов
-    army_back = types_enemies.pop(
-        random.randint(0, len(types_enemies) - 1))  # * тип врагов на последних 2 линиях
-    # * тип врагов на средних 3 линиях
-    army_center = types_enemies.pop(random.randint(0, len(types_enemies) - 1))
-    # * тип врагов на передних 3 линиях
-    army_front = types_enemies.pop(random.randint(0, len(types_enemies) - 1))
 
+    types_enemies_copy = ENEMIES_PICTURES.copy()
+    army_outline = types_enemies_copy.pop(random.randint(
+        0, len(types_enemies_copy) - 1))  # * по контуру клина тип врагов
+    army_back = types_enemies_copy.pop(
+        random.randint(0, len(types_enemies_copy) - 1))  # * тип врагов на последних 2 линиях
+    # * тип врагов на средних 3 линиях
+    army_center = types_enemies_copy.pop(
+        random.randint(0, len(types_enemies_copy) - 1))
+    # * тип врагов на передних 3 линиях
+    army_front = types_enemies_copy.pop(
+        random.randint(0, len(types_enemies_copy) - 1))
 
     number_enemy_x, number_enemy_y, enemy_width, enemy_height = quantify_enemies_x_y(
         screen)
@@ -95,7 +97,7 @@ def wedge(screen, enemies, extra_speed):
 def place_in_rows_wedge(screen, extra_speed, number_enemy_x, number_enemy_y, number_enemy, row_number, army_outline, army_back, army_center, army_front):
     '''Размещение врагов по особому порядку: по рядам и оболочке
        В основном для клина, но подойдёт и для других'''
-    if (number_enemy == 0) or (number_enemy == number_enemy_x - 1) or (row_number == number_enemy_y - 4):
+    if (number_enemy == 0) or (number_enemy == number_enemy_x - 1) or (row_number == number_enemy_y - 3):
         return Enemies.return_enemy(screen, army_outline, extra_speed)
     elif row_number <= 1:
         return Enemies.return_enemy(screen, army_back, extra_speed)
@@ -106,25 +108,25 @@ def place_in_rows_wedge(screen, extra_speed, number_enemy_x, number_enemy_y, num
     else:
         return Enemies.Enemy(screen, 'img/enemy_kaka.png', extra_speed)
 
-def chess(screen, enemies, width_screen, height_screen, extra_speed):
-    '''Построение армии - шахматная доска'''
-    global enemies_pictures
-    enemy = enemies.Enemy(screen)
-    enemy_width = enemy.rect.width
-    # число противников по горизонтали
-    number_enemy_x = int((width_screen - 2 * enemy_width) / enemy_width) - 2
-    enemy_height = enemy.rect.height
-    # число противников по вертикали
-    number_enemy_y = int(
-        (height_screen - 100 - 2 * enemy_height) / enemy_height) - 4
 
+def chess(screen, enemies, extra_speed):
+    '''Построение армии - шахматная доска'''
+
+    number_enemy_x, number_enemy_y, enemy_width, enemy_height = quantify_enemies_x_y(
+        screen)
+    second_type = random.choice(SPECIAL_ENEMIES_PICTURES)
     for row_number in range(number_enemy_y):
         if row_number % 2 == 0:
             is_odd_row = False
         else:
             is_odd_row = True
         for number_enemy in range(number_enemy_x):
-            enemy = enemies.Enemy(screen, extra_speed)
+            if is_odd_row:
+                enemy = Enemies.return_enemy(
+                    screen, second_type, extra_speed)
+            else:
+                enemy = Enemies.return_enemy(
+                    screen, 'img/enemy_kaka.png', extra_speed)
             enemy.x = enemy_width + 1.2 * enemy_width * number_enemy
             enemy.y = enemy_height + 1.2 * enemy_height * row_number
             enemy.rect.x = enemy.x
@@ -137,17 +139,14 @@ def chess(screen, enemies, width_screen, height_screen, extra_speed):
                     enemies.add(enemy)
 
 
-def heart(screen, enemies, width_screen, height_screen, extra_speed):
+def heart(screen, enemies, extra_speed):
     '''Построение армии - сердце'''
-    global enemies_pictures
-    enemy = enemies.Enemy(screen, extra_speed)
-    enemy_width = enemy.rect.width
-    # число противников по горизонтали
-    number_enemy_x = int((width_screen - 2 * enemy_width) / enemy_width) - 1
-    enemy_height = enemy.rect.height
-    # число противников по вертикали
-    number_enemy_y = int(
-        (height_screen - 100 - 2 * enemy_height) / enemy_height) - 4
+
+    number_enemy_x, number_enemy_y, enemy_width, enemy_height = quantify_enemies_x_y(
+        screen)
+
+    number_enemy_x += 1
+    number_enemy_y += 1
 
     for row_number in range(number_enemy_x):
         for enemy_number in range(number_enemy_y):
@@ -171,7 +170,8 @@ def heart(screen, enemies, width_screen, height_screen, extra_speed):
             else:
                 if (enemy_number != 11) and (enemy_number != 3):
                     continue
-            enemy = enemies.Enemy(screen, extra_speed)
+            enemy = Enemies.return_enemy(
+                screen, 'img/enemy_kaka.png', extra_speed)
             enemy.x = enemy_width + 1.1 * enemy_width * row_number
             enemy.y = enemy_height + 1.1 * enemy_height * enemy_number
             enemy.rect.x = enemy.x

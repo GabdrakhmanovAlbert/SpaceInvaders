@@ -74,7 +74,8 @@ def update_bullets(screen, stats, score, enemies, bullets, gun):
                     bullets.remove(bullet)
                     enemy.change_shield()
                 else:
-                    points_for_enemy(bullets, enemies, enemy, bullet, stats, score)
+                    points_for_enemy(bullets, enemies, enemy,
+                                     bullet, stats, score)
 
     if len(enemies) == 0:
         gun.block_controls = True
@@ -135,9 +136,9 @@ def gun_kill(stats, screen, score, gun, enemies, bullets):
 
 def create_army(screen, enemies, stats, extra_speed=0):
     '''Создание армии пришельцев (вернее её случайный выбор)'''
-    select_army = random.randint(2, 2)  # !!!
+    select_army = random.randint(4, 4)  # !!!
     if select_army == 1:
-        armies.square(screen, enemies, extra_speed, stats)
+        armies.rectangle(screen, enemies, extra_speed, stats)
     elif select_army == 2:
         armies.wedge(screen, enemies, extra_speed)
     elif select_army == 3:
