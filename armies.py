@@ -84,8 +84,7 @@ def heart(screen, enemies, extra_speed):
     number_enemy_x, number_enemy_y, enemy_width, enemy_height = quantify_enemies_x_y(
         screen)
 
-    number_enemy_x += 1
-    number_enemy_y += 1
+    number_enemy_x += 2
 
     for row_number in range(number_enemy_y):
         for enemy_number in range(number_enemy_x):
