@@ -136,7 +136,7 @@ def gun_kill(stats, screen, score, gun, enemies, bullets):
 
 def create_army(screen, enemies, stats, extra_speed=0):
     '''Создание армии пришельцев (вернее её случайный выбор)'''
-    select_army = random.randint(1, 4)  # !!!
+    select_army = random.randint(1, 3)  # !!!
     if select_army == 1:
         armies.rectangle(screen, enemies, extra_speed, stats)
     elif select_army == 2:
